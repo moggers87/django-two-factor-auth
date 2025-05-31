@@ -1,7 +1,5 @@
 import re
 
-import phonenumbers
-
 from two_factor.plugins.registry import MethodNotFoundError, registry
 
 phone_mask = re.compile(r'(?<=.{3})[0-9](?=.{2})')
@@ -42,6 +40,8 @@ def mask_phone_number(number):
     :param number: str or phonenumber object
     :return: str
     """
+    import phonenumbers  # noqa
+
     if isinstance(number, phonenumbers.PhoneNumber):
         number = format_phone_number(number)
     return phone_mask.sub('*', number)
@@ -53,6 +53,8 @@ def format_phone_number(number):
     :param number: str or phonenumber object
     :return: str
     """
+    import phonenumbers  # noqa
+
     if not isinstance(number, phonenumbers.PhoneNumber):
         number = phonenumbers.parse(number)
     return phonenumbers.format_number(number, phonenumbers.PhoneNumberFormat.INTERNATIONAL)

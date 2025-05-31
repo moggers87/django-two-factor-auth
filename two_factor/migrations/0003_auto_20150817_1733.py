@@ -1,6 +1,5 @@
 import logging
 
-import phonenumbers
 from django.db import migrations
 from phonenumber_field.modelfields import PhoneNumberField
 
@@ -9,6 +8,12 @@ logger = logging.getLogger(__name__)
 
 def migrate_phone_numbers(apps, schema_editor):
     PhoneDevice = apps.get_model("two_factor", "PhoneDevice")
+    try:
+        import phonenumbers
+    except ImportError:
+        logger.warning("phonenumbers module missing, skipping migration")
+        return
+
     for device in PhoneDevice.objects.all():
         try:
             number = phonenumbers.parse(device.number)
